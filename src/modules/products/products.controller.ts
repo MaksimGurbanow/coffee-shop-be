@@ -48,9 +48,6 @@ export class ProductsController {
     type: ErrorResponseDto,
   })
   async getFavoriteProducts(): Promise<ApiResponse<ProductListItem[]>> {
-    // Simulate random API errors for testing
-    this.errorSimulationService.simulateRandomError();
-
     try {
       const products = await this.productsService.getRandomCoffeeProducts();
       return {
@@ -84,9 +81,6 @@ export class ProductsController {
     type: ErrorResponseDto,
   })
   async getAllProducts(): Promise<ApiResponse<ProductListItem[]>> {
-    // Simulate random API errors for testing
-    this.errorSimulationService.simulateRandomError();
-
     try {
       const products = await this.productsService.getAllProducts();
       return {
@@ -127,9 +121,6 @@ export class ProductsController {
   async getProductById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ApiResponse<Product>> {
-    // Simulate random API errors for testing
-    this.errorSimulationService.simulateRandomError();
-
     try {
       const product = await this.productsService.getProductById(id);
       return {

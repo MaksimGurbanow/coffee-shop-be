@@ -57,7 +57,6 @@ export class OrdersController {
     // Simulate random API errors for testing
     // this.errorSimulationService.simulateRandomError();
 
-    console.log(createOrderDto, user);
     try {
       const result = await this.ordersService.confirmOrder(
         createOrderDto,

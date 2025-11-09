@@ -22,8 +22,8 @@ import { PaymentsModule } from './payments/payments.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        type: 'sqlite',
-        database: 'shop.db',
+        type: 'postgres',
+        url: configService.get<string>('DATABASE_URL'),
         entities: [Product, User, Order],
         synchronize: configService.get<string>('nodeEnv') !== 'production', // Use migrations in production
         logging: configService.get<string>('nodeEnv') === 'development',

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOrderDto } from 'src/common/dto/order.dto';
-import { Order, OrderStatus } from 'src/entities/order.entity';
+import { Order } from 'src/entities/order.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
@@ -21,7 +21,7 @@ export class OrdersService {
       items: orderDto.items,
       totalPrice: orderDto.totalPrice,
       user,
-      status: OrderStatus.PENDING,
+      status: 'pending',
     });
 
     await this.orderRepository.save(order);
@@ -47,7 +47,7 @@ export class OrdersService {
   async markPaid(orderId: string) {
     const order = await this.getOrderByID(orderId);
     if (!order) throw new NotFoundException('Order not found');
-    order.status = OrderStatus.PAID;
+    order.status = 'paid';
     return this.orderRepository.save(order);
   }
 
