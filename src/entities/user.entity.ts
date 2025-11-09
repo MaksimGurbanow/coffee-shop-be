@@ -3,9 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Order } from './order.entity';
 
 export enum PaymentMethod {
   CASH = 'cash',
@@ -49,4 +51,7 @@ export class User {
   @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(() => Order, (order) => order.user, { cascade: true })
+  orders: Order[];
 }

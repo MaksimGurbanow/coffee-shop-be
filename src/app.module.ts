@@ -10,6 +10,8 @@ import { CommonModule } from './common/common.module';
 import { Product } from './entities/product.entity';
 import { User } from './entities/user.entity';
 import configuration from './config/configuration';
+import { Order } from './entities/order.entity';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import configuration from './config/configuration';
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: 'shop.db',
-        entities: [Product, User],
+        entities: [Product, User, Order],
         synchronize: configService.get<string>('nodeEnv') !== 'production', // Use migrations in production
         logging: configService.get<string>('nodeEnv') === 'development',
       }),
@@ -32,6 +34,7 @@ import configuration from './config/configuration';
     AuthModule,
     OrdersModule,
     CommonModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

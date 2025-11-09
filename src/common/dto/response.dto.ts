@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Product } from '../../entities/product.entity';
 import { ProductListItem } from '../interfaces/api.interfaces';
 import { UserPublicDto } from './user.dto';
+import { Order } from 'src/entities/order.entity';
 
 // Base response wrapper
 export class BaseResponseDto<T> {
@@ -67,9 +68,16 @@ export class OrderConfirmationDto {
   orderId: string;
 }
 
+export type OrdersDto = Order[];
+
 export class OrderResponseDto extends BaseResponseDto<OrderConfirmationDto> {
   @ApiProperty()
   data: OrderConfirmationDto;
+}
+
+export class GetOrderResponseDto extends BaseResponseDto<OrdersDto> {
+  @ApiProperty()
+  data: OrdersDto;
 }
 
 // App info response

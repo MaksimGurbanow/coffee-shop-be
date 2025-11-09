@@ -7,6 +7,7 @@ import {
   Request,
   HttpException,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,7 +17,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from '../../common/dto/auth.dto';
+import { LoginDto, RegisterDto, UpdateDto } from '../../common/dto/auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ApiResponse } from '../../common/interfaces/api.interfaces';
 import {
@@ -151,6 +152,47 @@ export class AuthController {
       throw new HttpException(
         {
           error: 'Failed to fetch profile',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Put('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Update user profile' })
+  @SwaggerApiResponse({
+    status: 201,
+    description: 'Profile updated successfully',
+    type: ProfileResponseDto,
+  })
+  @SwaggerApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
+  async updateProfile(@Body() updateDto: UpdateDto) {
+    try {
+      console.log(updateDto);
+      const result = await this.authService.update(updateDto);
+      console.log(result);
+      return {
+        data: result,
+        message: 'update successful',
+      };
+    } catch (error) {
+      if (error.status === 401) {
+        throw new HttpException(
+          {
+            error: error.message,
+          },
+          error.status,
+        );
+      }
+      throw new HttpException(
+        {
+          error: 'Login failed',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
