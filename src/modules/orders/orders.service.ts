@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOrderDto } from 'src/common/dto/order.dto';
-import { Order } from 'src/entities/order.entity';
+import { Order, OrderStatus } from 'src/entities/order.entity';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class OrdersService {
@@ -20,6 +21,7 @@ export class OrdersService {
       items: orderDto.items,
       totalPrice: orderDto.totalPrice,
       user,
+      status: OrderStatus.PENDING,
     });
 
     await this.orderRepository.save(order);
@@ -35,5 +37,29 @@ export class OrdersService {
     return await this.orderRepository.find({
       where: { user: { id } },
     });
+  }
+
+  async getOrderByID(id: string) {
+    return await this.orderRepository.findOne({ where: { id } });
+  }
+
+  // orders.service.ts
+  async markPaid(orderId: string) {
+    const order = await this.getOrderByID(orderId);
+    if (!order) throw new NotFoundException('Order not found');
+    order.status = OrderStatus.PAID;
+    return this.orderRepository.save(order);
+  }
+
+  async verifyOrderHash(orderId: string, hash: string): Promise<boolean> {
+    if (!process.env.ORDER_HASH_SECRET) {
+      throw new Error('ORDER_HASH_SECRET not set');
+    }
+
+    const hmac = crypto.createHmac('sha256', process.env.ORDER_HASH_SECRET);
+    hmac.update(orderId);
+    const expectedHash = hmac.digest('hex');
+
+    return hash === expectedHash;
   }
 }

@@ -1,12 +1,18 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { User } from './user.entity';
-import { ApiProperty } from '@nestjs/swagger';
+
+export enum OrderStatus {
+  PENDING = 'pending',
+  PAID = 'paid',
+  DELIVERED = 'delivered',
+}
 
 @Entity('orders')
 export class Order {
@@ -34,4 +40,11 @@ export class Order {
 
   @ManyToOne(() => User, (user) => user.orders, { onDelete: 'CASCADE' })
   user: User;
+
+  @ApiProperty({ enum: OrderStatus, default: OrderStatus.PENDING })
+  @Column({
+    type: 'text',
+    default: OrderStatus.PENDING,
+  })
+  status: OrderStatus;
 }
