@@ -67,6 +67,11 @@ export class SeedService {
   }
 
   async seedAll(): Promise<void> {
+    const existingProductsCount = await this.productsService.count();
+    if (existingProductsCount > 0) {
+      this.logger.log('Products already exist, skipping seed');
+      return;
+    }
     this.logger.log('Starting database seeding...');
 
     await this.seedProducts();

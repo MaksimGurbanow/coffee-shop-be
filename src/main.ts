@@ -16,7 +16,7 @@ async function bootstrap() {
   });
   const configService = app.get(ConfigService);
 
-  const port = configService.get<number>('port');
+  const port = configService.get<number>('port') || 3000;
   const swaggerEnabled = configService.get<boolean>('swagger.enabled');
   const swaggerPath = configService.get<string>('swagger.path');
 
