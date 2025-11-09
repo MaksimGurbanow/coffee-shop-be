@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FR_URL } from 'data/url';
+import { FR_URL } from '../../../data/url';
 import { Product } from 'src/entities/product.entity';
 import { ProductsService } from 'src/modules/products/products.service';
 import Stripe from 'stripe';
